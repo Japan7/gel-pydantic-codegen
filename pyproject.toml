@@ -17,7 +17,7 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = ["pyright==1.1.402"]
+dev = ["pyright==1.1.403"]
 
 [project.scripts]
 gel-pydantic-codegen = "gel_pydantic_codegen.__main__:cli"
