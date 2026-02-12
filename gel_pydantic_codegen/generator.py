@@ -1,6 +1,7 @@
 from collections import defaultdict
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
+from typing import TypeVar
 
 import gel
 from gel import describe
@@ -26,6 +27,12 @@ from gel_pydantic_codegen.utils import (
     ruff_format,
     snake_to_camel,
 )
+
+T = TypeVar("T")
+
+
+def sorted_values(d: dict[str, T]) -> list[T]:
+    return [d[k] for k in sorted(d.keys())]
 
 
 class Generator:
@@ -114,10 +121,10 @@ class Generator:
         rendered = template.render(
             stem=filestem,
             query=process_data.query.strip(),
-            literals=process_data.literals.values(),
-            enums=process_data.enums.values(),
-            models=process_data.models.values(),
-            namedtuples=process_data.namedtuples.values(),
+            literals=sorted_values(process_data.literals),
+            enums=sorted_values(process_data.enums),
+            models=sorted_values(process_data.models),
+            namedtuples=sorted_values(process_data.namedtuples),
             args=(
                 list(process_data.args.values())
                 + list(process_data.optional_args.values())
@@ -218,7 +225,7 @@ class Generator:
                 members[name] = EdgeQLEnumMember(name, member)
 
             process_data.enums[enum_name] = EdgeQLEnum(
-                enum_name, list(members.values())
+                enum_name, sorted_values(members)
             )
             type_str = enum_name
 
@@ -267,7 +274,7 @@ class Generator:
             elif fields["id"].optional:
                 del fields["id"]
 
-        new_model.fields = list(fields.values())
+        new_model.fields = sorted_values(fields)
         new_model.has_aliased_fields = any(f.alias for f in new_model.fields)
 
         return new_model
