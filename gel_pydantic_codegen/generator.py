@@ -89,10 +89,10 @@ class Generator:
             elif return_cardinality is Cardinality.ONE:
                 process_data.return_type = f"{return_type_str}"
                 process_data.return_single = True
-            elif return_cardinality is Cardinality.MANY:
-                process_data.return_type = f"list[{return_type_str}]"
-                process_data.return_single = False
-            elif return_cardinality is Cardinality.AT_LEAST_ONE:
+            elif (
+                return_cardinality is Cardinality.AT_LEAST_ONE
+                or return_cardinality is Cardinality.MANY
+            ):
                 process_data.return_type = f"list[{return_type_str}]"
                 process_data.return_single = False
 
@@ -208,8 +208,6 @@ class Generator:
             module, enum_name = type.name.split("::")
             if module != "default":
                 enum_name = module.title() + enum_name
-            else:
-                enum_name = enum_name
 
             members: dict[str, EdgeQLEnumMember] = {}
             name_counts = defaultdict(int)

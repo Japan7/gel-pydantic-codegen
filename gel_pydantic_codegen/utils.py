@@ -31,6 +31,7 @@ def ruff_fix(path: Path):
             path.absolute(),
         ],
         capture_output=True,
+        check=False,
     )
     if proc.returncode != 0:
         raise RuntimeError(
@@ -45,6 +46,7 @@ def ruff_format(path: Path):
     proc = subprocess.run(
         [os.fsdecode(ruff), "format", path.absolute()],
         capture_output=True,
+        check=False,
     )
     if proc.returncode != 0:
         raise RuntimeError(
